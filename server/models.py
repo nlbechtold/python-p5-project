@@ -4,16 +4,18 @@ from sqlalchemy_serializer import SerializerMixin
 from config import db, bcrypt
 from sqlalchemy.ext.hybrid import hybrid_property
 
-# Models go here!
-guide_plant_table = db.Table('guide_plants',
-    db.Column('guide_id', db.Integer, db.ForeignKey('guides.id'), primary_key=True),
-    db.Column('plant_id', db.Integer, db.ForeignKey('plants.id'), primary_key=True)
-)
+class Plant_Guide_Join(db.Model, SerializerMixin):
+    __tablename__ = 'plants_guides_join'
+    id = db.Column(db.Integer, primary_key=True)
+    guide_id= db.Column(db.Integer, db.ForeignKey('guides.id'))
+    plant_id= db.Column(db.Integer, db.ForeignKey('plants.id'))
 
-national_park_plant_table = db.Table('national_parks_plants',
-    db.Column('national_park_id', db.Integer, db.ForeignKey('national_parks.id'), primary_key=True),
-    db.Column('plant_id', db.Integer, db.ForeignKey('plants.id'), primary_key=True)
-)
+class Plant_NP_Join(db.Model, SerializerMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = 'plants_nps_join'
+    plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'))
+    national_park_id = db.Column(db.Integer, db.ForeignKey('national_parks.id'))
+    
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
@@ -25,6 +27,13 @@ class User(db.Model, SerializerMixin):
     guides = db.relationship('Guide', back_populates='user', cascade="all, delete-orphan")
     
     serialize_rules = ('-guides.user','-_password_hash')
+    
+    @validates('email')
+    def validate_image(self, key, email):
+        if "@" in email:
+            return email
+        else:
+            raise ValueError('invalid email')
     
     @hybrid_property
     def password_hash(self):
@@ -43,15 +52,16 @@ class Guide(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False) 
+    
 
     
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     user = db.relationship('User', back_populates='guides')
     
-    plant = db.relationship('Plant', secondary=guide_plant_table, back_populates='guides')
+    plants = db.relationship('Plant', secondary='plants_guides_join', back_populates='guides')
 
-    serialize_rules = ('-user.guidess', '-plant.guides',)
+    serialize_rules = ('-user.guides', '-plants.guides',)
     
     
 
@@ -62,15 +72,14 @@ class Plant(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     img_1 = db.Column(db.String, nullable=False)
-    img_2 = db.Column(db.String)
     type = db.Column(db.String, nullable=False)
     subtype = db.Column(db.String)
-    season = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
 
-    guides = db.relationship('Guide', secondary=guide_plant_table, back_populates='plant')
+    guides = db.relationship('Guide', secondary='plants_guides_join', back_populates='plants')
+    national_parks = db.relationship('National_Park', secondary='plants_nps_join', back_populates='plants')
 
-    serialize_rules = ('-guide.plant',)    
+    serialize_rules = ('-guides','-national_parks.id')    
     
     @validates('img_1')
     def validate_image(self, key, img_1):
@@ -91,6 +100,8 @@ class Plant(db.Model, SerializerMixin):
             return name
         else:
             raise ValueError('Description must be between 5 and 30 characters')
+        
+
     
 class National_Park(db.Model, SerializerMixin):
     __tablename__ = 'national_parks'
@@ -99,9 +110,14 @@ class National_Park(db.Model, SerializerMixin):
     name = db.Column(db.String, nullable=False)
     state = db.Column(db.String, nullable=False)
     
+    plants = db.relationship('Plant', secondary='plants_nps_join', back_populates='national_parks')
+    
+    serialize_rules = ('-plants.national_parks',)
+    
     @validates('name')
     def validate_description(self, key, name):
         if 5 <= len(name) <= 30:
             return name
         else:
             raise ValueError('Description must be between 5 and 30 characters')
+        
