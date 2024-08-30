@@ -20,9 +20,9 @@ with app.app_context():
     nationalpark1 = National_Park(name= 'Yosemite', state ="CA")
     nationalpark2 = National_Park(name= 'Rocky Mountain', state = 'CO')
     
-    # print("creating users!")
-    # user1 = User(email='nancyleebechtold@gmail', _password_hash= 'meow123')
-    # user2 = User(email='annbechtold0883@gmail.com', _password_hash= 'woof123')
+    print("creating users!")
+    user1 = User(email='nancyleebechtold@gmail.com', password_hash= 'meow123')
+    user2 = User(email='annbechtold0883@gmail.com', password_hash= 'woof123')
 
     print("creating guides!")
     guide1 = Guide(title='trip to yosemite')
@@ -30,12 +30,12 @@ with app.app_context():
     
     plants = [plant1, plant2]
     parks =[nationalpark1, nationalpark2]
-    # users= [user1,user2]
+    users= [user1,user2]
     guides = [guide1,guide2]
     
     db.session.add_all(plants)
     db.session.add_all(parks)
-    # db.session.add_all(users)
+    db.session.add_all(users)
     db.session.add_all(guides)
     
     db.session.commit()

@@ -7,14 +7,15 @@ from config import app, db, api
 
 
 
-# @app.before_request
-# def check_credentials():
-#     valid_routes = ("/checksessions","/login", "/users")
-#     if request.path not in valid_routes and 'user_id' not in session:
-#         return {"error": "please login"},401
-#     else:
-#         print(session)
-#         pass
+@app.before_request
+def check_credentials():
+    valid_routes = ("/checksessions","/login", "/users")
+    print('youre in method')
+    if request.path not in valid_routes and 'user_id' not in session:
+        return {"error": "please login"},401
+    else:
+        print(session)
+        pass
 
 class UserGuides(Resource):
     def get(self):
