@@ -1,3 +1,4 @@
+
 import { CardMeta, CardHeader, CardContent, Card, Button, Image } from 'semantic-ui-react'
 import { useNavigate } from 'react-router-dom'
 
@@ -13,7 +14,7 @@ function GuideCard({guide, setGuideId, guideId, guides, setGuides}){
 
     // Function to delete guide
     function deleteGuide(){
-        fetch(`/api/guide/${guide.id}`, {
+        fetch(`/guide/${guide.id}`, {
             method: 'DELETE',
         })
         .then((response) => {

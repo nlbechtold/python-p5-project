@@ -19,7 +19,7 @@ function Userpage ({user, setUser, setGuideId, guideId}) {
 
     // Function to log user out
     function handleLogout(){
-        fetch('/api/logout',{method:"DELETE"})
+        fetch('/logout',{method:"DELETE"})
         .then(r=>r.json())
         .then(data => setUser(undefined))
         .then(()=>navigate('/'))
@@ -29,7 +29,7 @@ function Userpage ({user, setUser, setGuideId, guideId}) {
     useEffect(() => {
         if (user) {
             console.log(user)
-            fetch('/api/guides', {
+            fetch('/guides', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ function Userpage ({user, setUser, setGuideId, guideId}) {
 
     // Function to add new guide
     function handleSubmit(newGuide){
-        fetch("/api/guides",{
+        fetch("/guides",{
           method:"POST",
           headers:{
             "Content-Type": "Application/json"

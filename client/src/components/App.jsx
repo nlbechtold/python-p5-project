@@ -14,7 +14,7 @@ function App(){
   
   // Check if user is logged in
   useEffect(()=>{
-    fetch('/api/checksessions')
+    fetch('/checksessions')
     .then(r=>{
       if (r.ok){
         return r.json()

@@ -21,7 +21,7 @@ function Login({setUser}) {
   // Handles login and navigates to user page
   function handleLogin(e) {
     e.preventDefault();
-    fetch("/api/login",{
+    fetch("/login",{
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,13 +40,13 @@ function Login({setUser}) {
       navigate('/user')
     })
     .catch(data=>{
-      alert("Not valid emaail/password")
+      alert("Not valid emaail/password-login")
     })
   }
 
   // Handles creating new user and adding to database
   function handleCreate(newUser){
-    fetch("/api/users",{
+    fetch("/users",{
       method:"POST",
       headers:{
         "Content-Type": "application/json"
@@ -58,7 +58,7 @@ function Login({setUser}) {
       alert('User Added! Please Login')
     })
     .catch(data=>{
-      alert("Not valid email/password")
+      alert("Not valid email/password-post")
     })
   }
 
@@ -79,7 +79,7 @@ function Login({setUser}) {
 
   return (
     <div>
-      <h1>InteriYOUR Design</h1>
+      <h1>National Park Survival Guide</h1>
         <h2>Have an Account</h2>
           <Form onSubmit={handleLogin}>
               <h2>Login</h2> 

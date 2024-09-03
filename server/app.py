@@ -65,6 +65,7 @@ class Users(Resource):
                 email=data["email"],
                 password_hash=data["password"],
             )
+            # u._password_hash= data["password"]
             db.session.add(u)
             db.session.commit()
             return u.to_dict(), 201
@@ -102,21 +103,21 @@ class OneGuide(Resource):
 
     def post(self):  # New POST method
         try:
-            # Get JSON data from request
+           
             data = request.get_json()
             
             # Create a new Guide instance
             new_guide = Guide(
                 title=data.get('title'),
-                # Add any additional required fields here
-                user_id=data.get('user_id')  # Example: assuming guides have a user_id field
+                description=data.get('description'),
+                user_id=data.get('user_id') 
             )
             
-            # Add the new guide to the session and commit to save to the database
+      
             db.session.add(new_guide)
             db.session.commit()
             
-            # Return the newly created guide's data as a response
+         
             return new_guide.to_dict(), 201
         
         except Exception as e:
@@ -136,7 +137,7 @@ class OneGuide(Resource):
                 db.session.commit()
                 return guide.to_dict()
             except Exception as e:
-                print(e)
+                print(guide)
                 return {
                     "error": "validation error"
                 }, 400
@@ -220,13 +221,16 @@ api.add_resource(All_Plants,'/plants')
 class Login(Resource):
     def post(self):
         data = request.get_json()
+        print("Login data received:", data)
         user = User.query.filter(User.email == data['email']).first()
+        print("User found:", user)
         if user and user.authenticate(data['password']):
             session['stay_logged_in'] = data.get('stayLoggedIn', False)
             session['user_id'] = user.id 
-            print(session)
+            print("User authenticated, session created:", session)
             return jsonify(user.to_dict()) 
         else:
+            print("Authentication failed.")
             return jsonify({"Error": "Invalid email or password"}), 400
         
 api.add_resource(Login, '/login')
