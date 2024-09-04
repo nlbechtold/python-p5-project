@@ -13,7 +13,7 @@ function GuideCard({guide, setGuideId, guideId, guides, setGuides}){
     // Function to edit guide and takes you to guide page
     function editGuide(){
         setGuideId(guide.id)
-        navigate(`/guide/${guide.id}`)
+        navigate(`/user/guide`)
     }
 
     // Function to delete guide

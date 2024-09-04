@@ -9,7 +9,7 @@ import SelectedPlant from './SelectedPlant'
 
 function Guide({guideId, user}) {
 
-    // All states for guide page
+    // All states for guide pages
     const [plant, setPlant] = useState([]) 
     const [selectedPlant, setSelectedPlant] = useState([])
     const [filteredPlant, setFilteredPlant] = useState([])
