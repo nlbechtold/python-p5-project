@@ -7,18 +7,18 @@ from config import app, db, api
 
 
 
-@app.before_request
-def check_credentials():
-    valid_routes = ("/checksessions","/login", "/users")
-    print('youre in method')
-    if request.path not in valid_routes and 'user_id' not in session:
-        return {"error": "please login"},401
-    else:
-        print(session)
-        pass
+# @app.before_request
+# def check_credentials():
+#     valid_routes = ("/checksessions","/login", "/users")
+#     print('youre in method')
+#     if request.path not in valid_routes and 'user_id' not in session:
+#         return {"error": "please login"},401
+#     else:
+#         print(session)
+#         pass
 
 class UserGuides(Resource):
-    def get(self):
+    def get(self, user_id):
         print(session)
         user_id = session.get('user_id')    
         if user_id:
@@ -31,7 +31,7 @@ class UserGuides(Resource):
         else:
             return {"error": "User not logged in"}, 401
         
-    def post(self):
+    def post(self,user_id):
         print(session)
         try:
             user_id = session.get('user_id')
@@ -50,7 +50,7 @@ class UserGuides(Resource):
             print(e)
             return {"error": "Not valid guide"}, 400
 
-api.add_resource(UserGuides, '/guides')
+api.add_resource(UserGuides, '/user/<int:user_id>/guides')
 
 class Users(Resource):
     def get(self):
@@ -272,4 +272,5 @@ api.add_resource(CheckSession,'/checksessions')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
+
 

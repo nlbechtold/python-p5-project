@@ -1,15 +1,19 @@
 
-import { CardMeta, CardHeader, CardContent, Card, Button, Image } from 'semantic-ui-react'
+import { CardMeta, CardHeader, CardContent, Card, Button } from 'semantic-ui-react'
 import { useNavigate } from 'react-router-dom'
+import React, { PropTypes } from 'react';
 
 function GuideCard({guide, setGuideId, guideId, guides, setGuides}){
+
+
+
 
     const navigate = useNavigate()
 
     // Function to edit guide and takes you to guide page
     function editGuide(){
         setGuideId(guide.id)
-        navigate('/user/guide')
+        navigate(`/guide/${guide.id}`)
     }
 
     // Function to delete guide
@@ -57,5 +61,8 @@ function GuideCard({guide, setGuideId, guideId, guides, setGuides}){
         </Card>
     )
 }
-
+// GuideCard.propTypes = {
+//     guide = PropTypes.something.isRequired,
+//     guide.id = PropTypes.something.isRequired.
+// }
 export default GuideCard

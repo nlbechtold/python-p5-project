@@ -29,7 +29,7 @@ function Userpage ({user, setUser, setGuideId, guideId}) {
     useEffect(() => {
         if (user) {
             console.log(user)
-            fetch('/guides', {
+            fetch(`/user/${user.id}/guides`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -38,24 +38,30 @@ function Userpage ({user, setUser, setGuideId, guideId}) {
             .then(response => {
                 if (response.ok) {
                     return response.json();
-                } else {
+                }  else { console.log(response)
                     throw new Error('Failed to fetch guides');
                 }
             })
             .then(data => setGuides(data))
+            .catch(err => {
+                console.log(err);
+            })
         }
     }, [user]);
 
     // Function to add new guide
     function handleSubmit(newGuide){
-        fetch("/guides",{
+        fetch(`/user/${user.id}/guides`,{
           method:"POST",
           headers:{
             "Content-Type": "Application/json"
           },
           body: JSON.stringify(newGuide)
         })
-        .then(r=>r.json())
+        .then(r => {
+            console.log(r);
+            r.json();
+        })
         .then(data=>{
           const newArr = [...guides,data]
           setGuides(newArr)
@@ -79,7 +85,7 @@ function Userpage ({user, setUser, setGuideId, guideId}) {
 
     // Render guide cards
     const guideRender = guides.map((guide)=>{
-        return <GuideCard key={guide.id} guide={guide} guideId={guideId} setGuideId={setGuideId}  guides={guides} setGuides={setGuides}/>
+        return <GuideCard key={guideId} guide={guide}  setGuideId={setGuideId}  guides={guides} setGuides={setGuides}/>
     })
 
     return (
