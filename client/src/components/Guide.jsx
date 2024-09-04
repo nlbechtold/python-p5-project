@@ -22,35 +22,38 @@ function Guide({guideId, user}) {
 
 
     // Fetch all plant data and sets selected plant based on guide
-    useEffect(()=>{
+    useEffect(() => {
         fetch('/plants')
-        .then(r=>r.json())
-        .then(data=>{
-            setPlant(data)
-            setFilteredPlant(data)
-        })
+            .then(r => r.json())
+            .then(data => {
+                setPlant(data);
+                setFilteredPlant(data);
+            });
+        
         if (user && user.guides) {
             const selectedGuide = user.guides.find(guide => guide.id === guideId);
             
-            if (selectedGuide) {
+            if (selectedGuide && selectedGuide.plant) {
                 console.log("guide found");
                 setSelectedPlant(selectedGuide.plant);
             } else {
-                console.log("guide not found");
+                console.log("guide not found or has no plants");
+                setSelectedPlant([]);  // Ensure selectedPlant is set to an empty array
             }
         }
-    }
-    ,[])
+    }, []);
+    
     // Function to add plans to guide
     function addToGuide(newPlant, id) {
-        fetch(`/guide/${guideId}/add_plants_to_guide`, {
+        fetch(`/add_plants_to_guide`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 guide_id: guideId,  
-                plant_id: id,  
+                plant_ids: [newPlant.id], 
+                // plant_id: id,  
             }),
         })
         .then(response => {

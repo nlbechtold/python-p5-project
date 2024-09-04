@@ -1,9 +1,9 @@
 
-import { CardMeta, CardHeader, CardContent, Card, Button } from 'semantic-ui-react'
+import { CardMeta, CardHeader, CardContent, Card, Image,Button } from 'semantic-ui-react'
 import { useNavigate } from 'react-router-dom'
-import React, { PropTypes } from 'react';
+// import React from 'react';
 
-function GuideCard({guide, setGuideId, guideId, guides, setGuides}){
+function GuideCard({guide, setGuideId,  guides, setGuides}){
 
 
 
@@ -51,10 +51,21 @@ function GuideCard({guide, setGuideId, guideId, guides, setGuides}){
     return (
         <Card>
             <CardContent>
-                <CardHeader>{guide.title}</CardHeader>
-                <CardMeta>
-                    {guide.description}
-                </CardMeta>
+            <CardHeader>{guide.title}</CardHeader>
+                <CardMeta>{guide.description}</CardMeta>
+                {guide.plants && guide.plants.length > 0 && (
+                    <div>
+                        <h4>Plants:</h4>
+                        {guide.plants.map(plant => (
+                            <div key={plant.id}>
+                                <Image src={plant.img} size="small" />
+                                <p><strong>Name:</strong> {plant.name}</p>
+                                <p><strong>Description:</strong> {plant.description}</p>
+                                <p><strong>Type:</strong> {plant.type}</p>
+                            </div>
+                        ))}
+                    </div>
+                )}
                 <Button color='green' onClick={editGuide}>Edit Guide</Button>
                 <Button color='red' onClick={deleteGuide}>Delete Guide</Button>
             </CardContent>

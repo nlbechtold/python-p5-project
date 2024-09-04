@@ -15,7 +15,7 @@ with app.app_context():
     plant1 = Plant(
         name="Alfalfa", 
         type="edible", 
-        img_1="https://michelleandvitaadventures.wordpress.com/wp-content/uploads/2013/06/alfalfa.jpg?w=2000&h=", 
+        img="https://michelleandvitaadventures.wordpress.com/wp-content/uploads/2013/06/alfalfa.jpg?w=2000&h=", 
         description="The seeds of alfalfa can not only be sprouted, but also roasted or made into flour. The flowers, leaves, and young shoots can also be eaten, but I have to say I am most excited about sprouting the seeds."
     )
     
@@ -23,7 +23,7 @@ with app.app_context():
         name="Yarrow", 
         type="medicinal", 
         subtype="hemostatic", 
-        img_1="https://michelleandvitaadventures.wordpress.com/wp-content/uploads/2013/06/yarrow.jpg?w=2000&h=", 
+        img="https://michelleandvitaadventures.wordpress.com/wp-content/uploads/2013/06/yarrow.jpg?w=2000&h=", 
         description="Along with its styptic qualities, it is also anti-inflammatory, slightly antimicrobial and antibacterial, and can induce sweating (which can be very helpful in bringing down a fever or helping the body sweat out toxins). Use as tea, tincture, or poultice."
     )
 
