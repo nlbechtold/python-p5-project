@@ -209,6 +209,33 @@ class AddPlantsToGuide(Resource):
 
 api.add_resource(AddPlantsToGuide, '/add_plants_to_guide')
 
+class SearchNationalParks(Resource):
+    def get(self):
+        # Get query parameters for name, state, and plant type
+        name = request.args.get('name', '')
+        state = request.args.get('state', '')
+        plant_type = request.args.get('plant_type', '')
+
+        # Base query for national parks
+        query = National_Park.query
+
+        # Apply filters based on query parameters
+        if name:
+            query = query.filter(National_Park.name.ilike(f'%{name}%'))
+        if state:
+            query = query.filter(National_Park.state.ilike(f'%{state}%'))
+        if plant_type:
+            query = query.join(National_Park.plants).filter(Plant.type.ilike(f'%{plant_type}%'))
+
+        # Get the filtered results
+        parks = query.all()
+
+        # Return the list of national parks in a serialized format
+        return [park.to_dict() for park in parks], 200
+
+# Add the route for searching national parks
+api.add_resource(SearchNationalParks, '/search_national_parks')
+
 # YAAYY this WOrks
 class All_Plants(Resource):
     def get(self):

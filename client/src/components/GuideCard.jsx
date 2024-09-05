@@ -66,8 +66,9 @@ function GuideCard({guide, setGuideId,  guides, setGuides}){
                         ))}
                     </div>
                 )}
-                <Button color='green' onClick={editGuide}>Edit Guide</Button>
+                <Button color='green' onClick={editGuide}>Add Plants</Button>
                 <Button color='red' onClick={deleteGuide}>Delete Guide</Button>
+                <Button color='red' onClick={deleteGuide}>Edit Guide</Button>
             </CardContent>
         </Card>
     )
