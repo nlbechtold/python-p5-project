@@ -50,38 +50,46 @@ function Userpage ({user, setUser, setGuideId, guideId}) {
     }, [user]);
 
     // Function to add new guide
-    function handleSubmit(newGuide){
-        fetch(`/user/${user.id}/guides`,{
-          method:"POST",
-          headers:{
+    function handleSubmit(newGuide) {
+        fetch(`/user/${user.id}/guides`, {
+          method: "POST",
+          headers: {
             "Content-Type": "Application/json"
           },
           body: JSON.stringify(newGuide)
         })
         .then(r => {
-            console.log(r);
-            r.json();
+          if (r.ok) {
+            return r.json(); // Parse the JSON from the response
+          } else {
+            throw new Error('Failed to create guide');
+          }
         })
-        .then(data=>{
-          const newArr = [...guides,data]
-          setGuides(newArr)
+        .then(data => {
+          const newArr = [...guides, data]; // Add the new guide to the existing guides array
+          setGuides(newArr);
+          setTitle(''); // Clear form fields after submission
+          setDescription('');
         })
-    }
+        .catch(err => {
+          console.error(err);
+        });
+      }
 
     // Function to add new guide
-    function addGuide(e){
-        e.preventDefault()
+    function addGuide(e) {
+        e.preventDefault();
         if (user) {
-            const newGuide = {
-                title: title,
-                description: description,
-                user_id: user.id
-            };
-            handleSubmit(newGuide);
+          const newGuide = {
+            title: title,
+            description: description,
+            user_id: user.id
+          };
+          handleSubmit(newGuide);
         } else {
-            alert("User not found");
+          alert("User not found");
         }
-    }
+      }
 
     // Render guide cards
     const guideRender = guides.map((guide)=>{
@@ -104,7 +112,7 @@ function Userpage ({user, setUser, setGuideId, guideId}) {
                         <label>Description</label>
                         <input type="text" value={description} onChange={(e)=>setDescription(e.target.value)} placeholder="Description" required />
                     </FormField>
-                    <Button color='black' type='submit'>Submit</Button>
+                    <Button color='black' type='submit'>Create</Button>
             </Form>
         </div>
     )

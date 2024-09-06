@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { Form, Button, FormField, Card, FormSelect,itemsperrow } from 'semantic-ui-react';
+import { Form, Button, FormField, Card, FormSelect } from 'semantic-ui-react';
 import Plant from './Plant';
 import '../style.css';
 import SelectedPlant from './SelectedPlant';
@@ -8,7 +8,6 @@ import SelectedPlant from './SelectedPlant';
 function Guide({ guideId, user }) {
 
     // All states for guide pages
-    // const [plant, setPlant] = useState([]);
     const [selectedPlant, setSelectedPlant] = useState([]);
     const [filteredPlant, setFilteredPlant] = useState([]);
     const [filterType, setFilterType] = useState("");
@@ -21,18 +20,14 @@ function Guide({ guideId, user }) {
         fetch('/plants')
             .then(r => r.json())
             .then(data => {
-                setPlant(data);
                 setFilteredPlant(data);
             });
 
         if (user && user.guides) {
             const selectedGuide = user.guides.find(guide => guide.id === guideId);
-
             if (selectedGuide && selectedGuide.plant) {
-                console.log("guide found");
                 setSelectedPlant(selectedGuide.plant);
             } else {
-                console.log("guide not found or has no plants");
                 setSelectedPlant([]);  // Ensure selectedPlant is set to an empty array
             }
         }
@@ -50,34 +45,33 @@ function Guide({ guideId, user }) {
                 plant_ids: [newPlant.id], 
             }),
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response bad');
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(() => {
-            const newArr = [...selectedPlant, newPlant];
-            setSelectedPlant(newArr);
+            setSelectedPlant([...selectedPlant, newPlant]);
         })
-        .catch(error => {
-            console.error('There was a problem with the fetch:', error);
-        });
+        .catch(error => console.error('Error adding plant:', error));
     }
 
-    // Function to filter plants based on selected criteria
+    // Function to filter plants based on national park name, state, and type
     function handleSearch(e) {
         e.preventDefault();
 
-        let query = `/plants?`;
-        if (filterType) query += `type=${filterType}&`;
-        if (filterName) query += `name=${filterName}&`;
-        if (filterState) query += `state=${filterState}&`;
-
-        fetch(query)
+        fetch(`/plants`)
             .then(r => r.json())
             .then(data => {
-                setFilteredPlant(data);
+                // Apply case-insensitive filtering for national park name, state, and plant type
+                const filtered = data.filter(plant => {
+                    const parkName = plant.national_parks[0]?.name.toLowerCase() || '';
+                    const parkState = plant.national_parks[0]?.state.toLowerCase() || '';
+                    const plantType = plant.type.toLowerCase();
+                    
+                    return (
+                        (!filterName || parkName.includes(filterName.toLowerCase())) &&
+                        (!filterState || parkState.includes(filterState.toLowerCase())) &&
+                        (!filterType || plantType === filterType.toLowerCase())
+                    );
+                });
+                setFilteredPlant(filtered);
             });
     }
 
@@ -114,9 +108,9 @@ function Guide({ guideId, user }) {
                     />
 
                     <FormField>
-                        <label>Plant Name</label>
+                        <label>National Park Name</label>
                         <input
-                            placeholder="Search by name"
+                            placeholder="Search by park name"
                             value={filterName}
                             onChange={(e) => setFilterName(e.target.value)}
                         />
