@@ -13,21 +13,20 @@ function App(){
 
   
   // Check if user is logged in
-  useEffect(()=>{
-    fetch('/checksessions')
-    .then(r=>{
-      if (r.ok){
-        return r.json()
-      }
-      else{
-        throw new Error
-      }
-    })
-    .then(data => {
-      setUser(data)
-    })
-    .catch(()=>{})
-  },[])
+  useEffect(() => {
+    fetch('http://localhost:5555/checksessions')  // Make sure this points to the correct port
+      .then(r => {
+        if (r.ok) {
+          return r.json();
+        } else {
+          throw new Error();
+        }
+      })
+      .then(data => {
+        setUser(data);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <div className="body2">

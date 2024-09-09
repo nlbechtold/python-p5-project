@@ -1,70 +1,84 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CardMeta, CardHeader, CardContent, Card, Image, Button, Form, Input } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
+import SendEmailButton from './SendEmailButton';
 
-function GuideCard({ guide, setGuideId, guides, setGuides }) {
+function GuideCard({ guide, setGuideId, guides, setGuides, user }) {
     const [isEditing, setIsEditing] = useState(false);
     const [title, setTitle] = useState(guide ? guide.title : '');
     const [description, setDescription] = useState(guide ? guide.description : '');
     const navigate = useNavigate();
 
+    useEffect(() => {
+        // Update state when guide changes
+        if (guide) {
+            setTitle(guide.title);
+            setDescription(guide.description);
+        }
+    }, [guide]);
+
     // Function to edit guide and takes you to guide page
     function editGuide() {
-        setGuideId(guide.id);
-        navigate(`/user/guide`);
+        if (guide && guide.id) {
+            setGuideId(guide.id);
+            navigate(`/user/guide`);
+        }
     }
 
     // Function to delete guide
     function deleteGuide() {
-        fetch(`/guide/${guide.id}`, {
-            method: 'DELETE',
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to delete guide');
-                }
-                return response.json();
+        if (guide && guide.id) {
+            fetch(`/guide/${guide.id}`, {
+                method: 'DELETE',
             })
-            .then(() => {
-                const notRemoved = guides.filter((gu) => gu.id !== guide.id);
-                setGuides(notRemoved);
-            })
-            .catch((error) => {
-                console.error('There was a problem with the fetch operation:', error);
-            });
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete guide');
+                    }
+                    return response.json();
+                })
+                .then(() => {
+                    const notRemoved = guides.filter((gu) => gu.id !== guide.id);
+                    setGuides(notRemoved);
+                })
+                .catch((error) => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
     }
 
     // Function to handle the patch request to update guide details
     function handleEditSubmit() {
-        fetch(`/guide/${guide.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                title,
-                description,
-            }),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to update guide');
-                }
-                return response.json();
+        if (guide && guide.id) {
+            fetch(`/guide/${guide.id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title,
+                    description,
+                }),
             })
-            .then((updatedGuide) => {
-                // Update the guide in the guides state
-                const updatedGuides = guides.map((gu) => (gu.id === updatedGuide.id ? updatedGuide : gu));
-                setGuides(updatedGuides);
-                setIsEditing(false);
-            })
-            .catch((error) => {
-                console.error('There was a problem with the update operation:', error);
-            });
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update guide');
+                    }
+                    return response.json();
+                })
+                .then((updatedGuide) => {
+                    const updatedGuides = guides.map((gu) => (gu.id === updatedGuide.id ? updatedGuide : gu));
+                    setGuides(updatedGuides);
+                    setIsEditing(false);
+                })
+                .catch((error) => {
+                    console.error('There was a problem with the update operation:', error);
+                });
+        }
     }
 
-    // Ensure guide is defined before rendering
-    if (!guide) {
+    // Ensure guide and user are defined before rendering
+    if (!guide || !user) {
         return <div>Loading...</div>;
     }
 
@@ -92,6 +106,8 @@ function GuideCard({ guide, setGuideId, guides, setGuides }) {
                     <>
                         <CardHeader>{guide.title}</CardHeader>
                         <CardMeta>{guide.description}</CardMeta>
+                        {/* Pass userId only if user exists */}
+                        <SendEmailButton userId={user ? user.id : null} guideId={guide.id} />
                         {guide.plants && guide.plants.length > 0 && (
                             <div>
                                 <h4>Plants:</h4>

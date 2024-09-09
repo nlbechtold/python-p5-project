@@ -1,9 +1,40 @@
 #!/usr/bin/env python3
 
+#!/usr/bin/env python3
+
+
 from flask import Flask, request, session, jsonify
-from flask_restful import Resource
+from flask_restful import Resource, Api
+from flask_mail import Mail, Message
+from flask_cors import CORS
+from flask_migrate import Migrate
+from config import db, bcrypt, Config
 from models import Plant, Guide, National_Park, User, Plant_Guide_Join, Plant_NP_Join
-from config import app, db, api
+
+# Create the Flask app instance
+app = Flask(__name__)
+
+# Load the configuration
+app.config.from_object(Config)
+
+# Initialize extensions with the app
+db.init_app(app)
+bcrypt.init_app(app)
+mail = Mail(app)
+
+# Initialize migrate and api here
+migrate = Migrate(app, db)  # Migrate initialized with app and db
+api = Api(app)  # API initialized with app
+# Enable CORS for the app
+CORS(app)  # Moved here
+
+# Now you can safely access app.config
+print("MAIL_SERVER:", app.config['MAIL_SERVER'])
+print("MAIL_USERNAME:", app.config['MAIL_USERNAME'])
+
+# Continue with your routes and resources setup...
+
+# Continue with your routes and resources setup...
 
 
 
@@ -16,6 +47,49 @@ from config import app, db, api
 #     else:
 #         print(session)
 #         pass
+
+class SendEmail(Resource):
+    def post(self):
+        data = request.get_json()
+
+        # Get the user ID and guide ID from the request
+        user_id = data.get('user_id')
+        guide_id = data.get('guide_id')
+
+        # Retrieve user and guide information from the database
+        user = User.query.get(user_id)
+        guide = Guide.query.get(guide_id)
+
+        if not user or not guide:
+            return {'error': 'User or Guide not found'}, 404
+
+        # Construct the email message content
+        email_body = f"Guide Title: {guide.title}\nDescription: {guide.description}\n"
+        email_body += "\nSelected Plants:\n"
+
+        for plant in guide.plants:
+            email_body += f"- {plant.name} ({plant.type}): {plant.description}\n"
+
+        try:
+            # Create the email message
+            msg = Message(
+                subject=f"Guide Information: {guide.title}",
+                sender=app.config['MAIL_DEFAULT_SENDER'],
+                recipients=[user.email]  # Send to the user's email
+            )
+            msg.body = email_body
+
+            # Send the email
+            mail.send(msg)
+
+            return {'message': f"Email sent to {user.email}"}, 200
+        except Exception as e:
+            return {'error': str(e)}, 500
+
+# Add the resource to the API
+api.add_resource(SendEmail, '/send_email')
+
+
 
 class UserGuides(Resource):
     def get(self, user_id):
@@ -166,10 +240,7 @@ api.add_resource(OneGuide, '/guide', '/guide/<int:guide_id>')
 
 class AddPlantsToGuide(Resource):
     def post(self):
-        """
-        Adds multiple plants to a specific guide based on provided guide ID and plant IDs.
-        Expected JSON input: { "guide_id": <guide_id>, "plant_ids": [<plant_id1>, <plant_id2>, ...] }
-        """
+     
         data = request.get_json()
         
    
@@ -182,12 +253,12 @@ class AddPlantsToGuide(Resource):
         if not plant_ids:
             return {"error": "List of plant IDs is required"}, 400
 
-        # Fetch the guide to ensure it exists
+        # fetch the guide 
         guide = Guide.query.get(guide_id)
         if not guide:
             return {"error": "Guide not found"}, 404
 
-        # Fetch all plants to ensure they exist
+        # fetch all plants 
         plants = Plant.query.filter(Plant.id.in_(plant_ids)).all()
         if len(plants) != len(plant_ids):
             return {"error": " plant IDs are invalid or not found"}, 404
