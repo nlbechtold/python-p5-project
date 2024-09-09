@@ -72,13 +72,22 @@ class SendEmail(Resource):
 
         if not user or not guide:
             return {'error': 'User or Guide not found'}, 404
-
-        # Construct the email message content
-        email_body = f"Guide Title: {guide.title}\nDescription: {guide.description}\n"
-        email_body += "\nSelected Plants:\n"
-
+        email_body = f"""
+        <h1>Guide Title: {guide.title}</h1>
+        <p>{guide.description}</p>
+        <h3>Selected Plants:</h3>
+        <ul>
+        """
         for plant in guide.plants:
-            email_body += f"- {plant.name} ({plant.type}): {plant.description}\n"
+            email_body += f"""
+            <li>
+                <h4>{plant.name} ({plant.type})</h4>
+                <img src="{plant.img}" alt="{plant.name}" style="width:150px;"/>
+                <p>{plant.description}</p>
+            </li>
+            """
+
+        email_body += "</ul>"
 
         try:
             # Create the email message

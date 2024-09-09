@@ -64,23 +64,7 @@ class Guide(db.Model, SerializerMixin):
 
     serialize_rules = ('-user.guides', '-plants.guides',)
     
-    # def to_dict(self):
-    #     return {
-    #         "id": self.id,
-    #         "title": self.title,
-    #         "description": self.description,
-    #         "plants": [
-    #             {
-    #                 "id": plant.id,
-    #                 "name": plant.name,
-    #                 "description": plant.description,
-    #                 "type": plant.type,
-    #                 "image_url": plant.image_url
-    #             } for plant in self.plants
-    #         ]
-    #     }
-    
-    
+
 
 
 class Plant(db.Model, SerializerMixin):
