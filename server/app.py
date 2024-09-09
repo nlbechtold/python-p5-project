@@ -96,7 +96,7 @@ class SendEmail(Resource):
                 sender=app.config['MAIL_DEFAULT_SENDER'],
                 recipients=[user.email]  # Send to the user's email
             )
-            msg.body = email_body
+            msg.html = email_body
 
             # Send the email
             mail.send(msg)
