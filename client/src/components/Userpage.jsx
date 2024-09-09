@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react'
 import {Form, Button, FormField} from 'semantic-ui-react'
 import GuideCard from './GuideCard'
 
-function Userpage ({user, setUser, setGuideId, guideId}) {
+function Userpage ({user, setUser, setGuideId}) {
 
     // States for userpage
     const [guides, setGuides] = useState([]);
@@ -21,7 +21,7 @@ function Userpage ({user, setUser, setGuideId, guideId}) {
     function handleLogout(){
         fetch('/logout',{method:"DELETE"})
         .then(r=>r.json())
-        .then(data => setUser(undefined))
+        .then(() => setUser(undefined))
         .then(()=>navigate('/'))
     }
 
@@ -29,7 +29,7 @@ function Userpage ({user, setUser, setGuideId, guideId}) {
     useEffect(() => {
         if (user) {
             console.log(user)
-            fetch(`/user/${user.id}/guides`, {
+            fetch(`/user/${user.id}/guides`, {  // Full URL to backend
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ function Userpage ({user, setUser, setGuideId, guideId}) {
             .then(response => {
                 if (response.ok) {
                     return response.json();
-                }  else { console.log(response)
+                } else {
                     throw new Error('Failed to fetch guides');
                 }
             })
@@ -93,7 +93,7 @@ function Userpage ({user, setUser, setGuideId, guideId}) {
 
     // Render guide cards
     const guideRender = guides.map((guide)=>{
-        return <GuideCard key={guideId} guide={guide}  setGuideId={setGuideId}  guides={guides} setGuides={setGuides}/>
+        return <GuideCard key={guide.id} guide={guide}  setGuideId={setGuideId}  guides={guides} setGuides={setGuides} user={user}/>
     })
 
     return (

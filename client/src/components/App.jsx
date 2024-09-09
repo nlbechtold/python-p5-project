@@ -14,18 +14,20 @@ function App(){
   
   // Check if user is logged in
   useEffect(() => {
-    fetch('http://localhost:5555/checksessions')  // Make sure this points to the correct port
-      .then(r => {
+    fetch(`/checksessions`)  // Explicitly set the full backend URL
+      .then((r) => {
         if (r.ok) {
           return r.json();
         } else {
           throw new Error();
         }
       })
-      .then(data => {
+      .then((data) => {
         setUser(data);
       })
-      .catch(() => {});
+      .catch(() => {
+        console.log("Error in session check");
+      });
   }, []);
 
   return (

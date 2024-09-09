@@ -10,12 +10,20 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from config import db, bcrypt, Config
 from models import Plant, Guide, National_Park, User, Plant_Guide_Join, Plant_NP_Join
+from flask_session import Session
 
-# Create the Flask app instance
 app = Flask(__name__)
 
 # Load the configuration
 app.config.from_object(Config)
+
+# Set session type to filesystem to store session data on the server
+app.config['SESSION_TYPE'] = 'filesystem'  # Use the filesystem for session storage
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+
+# Initialize the session
+Session(app)
 
 # Initialize extensions with the app
 db.init_app(app)
@@ -25,8 +33,10 @@ mail = Mail(app)
 # Initialize migrate and api here
 migrate = Migrate(app, db)  # Migrate initialized with app and db
 api = Api(app)  # API initialized with app
+
 # Enable CORS for the app
-CORS(app)  # Moved here
+# CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 # Now you can safely access app.config
 print("MAIL_SERVER:", app.config['MAIL_SERVER'])
@@ -357,15 +367,16 @@ api.add_resource(SaveSession,'/session')
 # checks back end to see if saved a session
 class CheckSession(Resource):
     def get(self):
-        print(session)
-        if session.get('stay_logged_in') == True:
-            user = User.query.filter(User.id == session.get('user_id')).first()
-            return user.to_dict()
-        else:
-            return {}, 404
-        
-api.add_resource(CheckSession,'/checksessions')
+        print("CheckSession endpoint accessed")  # Debugging print statement
+        if session.get('stay_logged_in'):
+            user = User.query.get(session.get('user_id'))
+            if user:
+                return user.to_dict(), 200
+            else:
+                return {"error": "User not found"}, 404
+        return {"error": "Not logged in"}, 404
 
+api.add_resource(CheckSession, '/checksessions')
 
 
 if __name__ == '__main__':
