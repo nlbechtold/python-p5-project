@@ -113,10 +113,11 @@ function GuideCard({ guide, setGuideId, guides, setGuides, user }) {
                                 <h4>Plants:</h4>
                                 {guide.plants.map((plant) => (
                                     <div key={plant.id}>
-                                        <Image src={plant.img} size="small" />
                                         <p><strong>Name:</strong> {plant.name}</p>
-                                        <p><strong>Description:</strong> {plant.description}</p>
+                                        <Image src={plant.img} size="small" />
                                         <p><strong>Type:</strong> {plant.type}</p>
+                                        <p><strong>Description:</strong> {plant.description}</p>
+                                        
                                     </div>
                                 ))}
                             </div>

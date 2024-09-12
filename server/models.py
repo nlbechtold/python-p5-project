@@ -66,7 +66,6 @@ class Guide(db.Model, SerializerMixin):
     
 
 
-
 class Plant(db.Model, SerializerMixin):
     __tablename__ = 'plants'
 
@@ -82,25 +81,32 @@ class Plant(db.Model, SerializerMixin):
 
     serialize_rules = ('-guides','-national_parks.id')    
     
-    @validates('img_1')
-    def validate_image(self, key, img_1):
-        if "http" in img_1:
-            return img_1
-        else:
-            raise ValueError('Image must be a valid URL')
+    # @validates('img')
+    # def validate_image(self, key, img):
+    #     if "http" or "https"in img:
+    #         return img
+    #     else:
+    #         raise ValueError('Image must be a valid URL')
         
-    @validates('description')
-    def validate_description(self, key, description):
-        if 10 <= len(description) <= 300:
-            return description
-        else:
-            raise ValueError('Description must be between 10 and 300 characters')
-    @validates('name')
-    def validate_description(self, key, name):
-        if 5 <= len(name) <= 30:
-            return name
-        else:
-            raise ValueError('Description must be between 5 and 30 characters')
+    # @validates('description')
+    # def validate_description(self, key, description):
+    #     if 10 <= len(description) <= 300:
+    #         return description
+    #     else:
+    #         raise ValueError('Description must be between 10 and 300 characters')
+    # @validates('name')
+    # def validate_name(self, key, name):
+    #     if 5 <= len(name) <= 30:
+    #         return name
+    #     else:
+    #         raise ValueError('name must be between 5 and 30 characters')
+
+    # @validates('name')
+    # def validate_description(self, key, name):
+    #     if 5 <= len(name) <= 30:
+    #         return name
+    #     else:
+    #         raise ValueError('Description must be between 5 and 30 characters')
         
 
     
@@ -115,10 +121,10 @@ class National_Park(db.Model, SerializerMixin):
     
     serialize_rules = ('-plants.national_parks',)
     
-    @validates('name')
-    def validate_description(self, key, name):
-        if 5 <= len(name) <= 30:
-            return name
-        else:
-            raise ValueError('Description must be between 5 and 30 characters')
+    # @validates('name')
+    # def validate_description(self, key, name):
+    #     if 5 <= len(name) <= 30:
+    #         return name
+    #     else:
+    #         raise ValueError('Description must be between 5 and 30 characters')
         
