@@ -79,7 +79,7 @@ function Login({setUser}) {
 
   return (
     <div>
-      <h1>National Park Survival Guide</h1>
+      <h1>Foraging Friends</h1>
         <h2>Have an Account</h2>
           <Form onSubmit={handleLogin}>
               <h2>Login</h2> 

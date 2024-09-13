@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { Form, Button, FormField, Card, FormSelect } from 'semantic-ui-react';
+import { Form, Button, FormField, Card, FormSelect} from 'semantic-ui-react';
 import Plant from './Plant';
 import '../style.css';
 import SelectedPlant from './SelectedPlant';
@@ -59,7 +59,7 @@ function Guide({ guideId, user }) {
         fetch(`/plants`)
             .then(r => r.json())
             .then(data => {
-                // Apply case-insensitive filtering for national park name, state, and plant type
+            //    creating the filter variables for accessing plants
                 const filtered = data.filter(plant => {
                     const parkName = plant.national_parks[0]?.name.toLowerCase() || '';
                     const parkState = plant.national_parks[0]?.state.toLowerCase() || '';
@@ -89,7 +89,7 @@ function Guide({ guideId, user }) {
         { key: 't', text: 'Edible', value: 'edible' },
         { key: 'c1', text: 'Medicinal', value: 'medicinal' },
     ];
-
+// below is the form for the filtered plants
     return (
         <div className="container">
             <div className="Header">
@@ -129,7 +129,7 @@ function Guide({ guideId, user }) {
                 </Form>
 
                 <div className="Content2">
-                    <div className="plants2" itemsperrow={2}>
+                    <div className="plants2" itemsPerRow={2}>
                         <Card.Group>
                             {selectedPlantRender}
                         </Card.Group>

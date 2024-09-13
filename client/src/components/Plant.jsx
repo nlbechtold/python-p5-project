@@ -8,7 +8,7 @@ function Plant({plant, addToGuide}){
         const id = plant.id
         addToGuide(plant, id);
     }
-    
+    // output of plant displays
     return (
         <div>
             <Card>

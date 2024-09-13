@@ -14,7 +14,7 @@ function App(){
   
   // Check if user is logged in
   useEffect(() => {
-    fetch(`/checksessions`)  // Explicitly set the full backend URL
+    fetch(`/checksessions`)  
       .then((r) => {
         if (r.ok) {
           return r.json();
@@ -29,7 +29,7 @@ function App(){
         console.log("Error in session check");
       });
   }, []);
-
+// below are the routes
   return (
     <div className="body2">
       <BrowserRouter>

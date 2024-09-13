@@ -25,7 +25,7 @@ function GuideCard({ guide, setGuideId, guides, setGuides, user }) {
         }
     }
 
-    // Function to delete guide
+    // Function to delete guide with error handling 
     function deleteGuide() {
         if (guide && guide.id) {
             fetch(`/guide/${guide.id}`, {
@@ -77,10 +77,7 @@ function GuideCard({ guide, setGuideId, guides, setGuides, user }) {
         }
     }
 
-    // Ensure guide and user are defined before rendering
-    if (!guide || !user) {
-        return <div>Loading...</div>;
-    }
+// below is the form to edit the guide
 
     return (
         <Card>
@@ -98,7 +95,7 @@ function GuideCard({ guide, setGuideId, guides, setGuides, user }) {
                         <Button color="green" onClick={handleEditSubmit}>
                             Save
                         </Button>
-                        <Button color="grey" onClick={() => setIsEditing(false)}>
+                        <Button color="ygrey" onClick={() => setIsEditing(false)}>
                             Cancel
                         </Button>
                     </Form>

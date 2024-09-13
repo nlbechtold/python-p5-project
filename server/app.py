@@ -25,26 +25,23 @@ app.config['SESSION_USE_SIGNER'] = True
 # Initialize the session
 Session(app)
 
-# Initialize extensions with the app
+# Initialize email and bcryptwith the app
 db.init_app(app)
 bcrypt.init_app(app)
 mail = Mail(app)
 
 # Initialize migrate and api here
-migrate = Migrate(app, db)  # Migrate initialized with app and db
-api = Api(app)  # API initialized with app
+migrate = Migrate(app, db)  
+api = Api(app)  
 
-# Enable CORS for the app
-# CORS(app)
+
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
-# Now you can safely access app.config
+
 print("MAIL_SERVER:", app.config['MAIL_SERVER'])
 print("MAIL_USERNAME:", app.config['MAIL_USERNAME'])
 
-# Continue with your routes and resources setup...
 
-# Continue with your routes and resources setup...
 
 
 
@@ -57,7 +54,7 @@ print("MAIL_USERNAME:", app.config['MAIL_USERNAME'])
 #     else:
 #         print(session)
 #         pass
-
+# method to send email
 class SendEmail(Resource):
     def post(self):
         data = request.get_json()
@@ -105,10 +102,10 @@ class SendEmail(Resource):
         except Exception as e:
             return {'error': str(e)}, 500
 
-# Add the resource to the API
+
 api.add_resource(SendEmail, '/send_email')
 
-
+# getting and posting guides
 
 class UserGuides(Resource):
     def get(self, user_id):
@@ -145,6 +142,7 @@ class UserGuides(Resource):
 
 api.add_resource(UserGuides, '/user/<int:user_id>/guides')
 
+# method for getting and postng a user
 class Users(Resource):
     def get(self):
         au = User.query.all()
@@ -168,8 +166,7 @@ class Users(Resource):
             return {"error": "Not valid user"}, 400
 
 api.add_resource(Users, '/users')
-
-# YAAY this WORKS below
+# getting a park
 class OneNationalPark(Resource):
     def get(self, national_park_id):  
         np = National_Park.query.filter(National_Park.id == national_park_id).first()
@@ -183,7 +180,7 @@ class OneNationalPark(Resource):
 
 api.add_resource(OneNationalPark, '/national_park/<int:national_park_id>')
 
-# YAAAY full CRUD for guide works
+#full CRUD for guides
 class OneGuide(Resource):
     def get(self, guide_id): 
         guide = Guide.query.filter(Guide.id == guide_id).first()  
@@ -288,7 +285,7 @@ class AddPlantsToGuide(Resource):
                 plant_guide_join = Plant_Guide_Join(plant_id=plant.id, guide_id=guide.id)
                 db.session.add(plant_guide_join)
             
-            # Commit the session
+          
             db.session.commit()
             return {"message": "Plants added to guide successfully"}, 201
         
@@ -299,6 +296,7 @@ class AddPlantsToGuide(Resource):
 
 api.add_resource(AddPlantsToGuide, '/add_plants_to_guide')
 
+# method for filtering results
 class SearchNationalParks(Resource):
     def get(self):
         # Get query parameters for name, state, and plant type
@@ -320,13 +318,13 @@ class SearchNationalParks(Resource):
         # Get the filtered results
         parks = query.all()
 
-        # Return the list of national parks in a serialized format
+       
         return [park.to_dict() for park in parks], 200
 
 # Add the route for searching national parks
 api.add_resource(SearchNationalParks, '/search_national_parks')
 
-# YAAYY this WOrks
+# getting all plants
 class All_Plants(Resource):
     def get(self):
         plants = Plant.query.all()
@@ -376,7 +374,7 @@ api.add_resource(SaveSession,'/session')
 # checks back end to see if saved a session
 class CheckSession(Resource):
     def get(self):
-        print("CheckSession endpoint accessed")  # Debugging print statement
+      
         if session.get('stay_logged_in'):
             user = User.query.get(session.get('user_id'))
             if user:

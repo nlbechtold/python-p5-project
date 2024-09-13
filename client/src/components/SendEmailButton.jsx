@@ -1,5 +1,3 @@
-// SendGuideEmailButton.jsx
-import React from 'react';
 
 function SendEmailButton({ userId, guideId }) {
   const sendEmail = () => {
@@ -18,7 +16,7 @@ function SendEmailButton({ userId, guideId }) {
         if (data.error) {
           alert('Failed to send email: ' + data.error);
         } else {
-          alert('Email sent successfully!');
+          alert('Email sent!');
         }
       })
       .catch(error => {

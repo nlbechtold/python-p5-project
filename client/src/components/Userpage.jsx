@@ -98,8 +98,8 @@ function Userpage ({user, setUser, setGuideId}) {
 
     return (
         <div>
-            <h3>Survival Plant Guide</h3>
-            <h2>Welcome {user ? user.name : 'User'}</h2>
+           
+            <h2>Welcome  to Foraging Friends</h2>
             <Button color='black' onClick={(e)=>handleLogout(e)}>Sign Out</Button>
             {guideRender}
             <Form onSubmit={addGuide}>
